@@ -15,9 +15,13 @@ else (${WITH_THREADING} STREQUAL ON)
 	set (PTHREAD_INCLUDE_DIR "")
 endif (${WITH_THREADING} STREQUAL ON)
 
-include_directories(${mosquitto_SOURCE_DIR} ${mosquitto_SOURCE_DIR}/lib
-			${STDBOOL_H_PATH} ${STDINT_H_PATH}
-			${OPENSSL_INCLUDE_DIR} ${PTHREAD_INCLUDE_DIR})
+include_directories(${mosquitto_SOURCE_DIR} 
+					${mosquitto_SOURCE_DIR}/lib
+					${STDBOOL_H_PATH} 
+					${STDINT_H_PATH}
+					${OPENSSL_INCLUDE_DIR} 
+					${PTHREAD_INCLUDE_DIR})
+
 link_directories(${mosquitto_SOURCE_DIR}/lib)
 
 add_library(libmosquitto SHARED
@@ -41,11 +45,15 @@ add_library(libmosquitto SHARED
 	util_mosq.c util_mosq.h
 	will_mosq.c will_mosq.h)
 
-set (LIBRARIES ${OPENSSL_LIBRARIES} ${PTHREAD_LIBRARIES})
+if(ANDROID)
+    set (LIBRARIES ${PTHREAD_LIBRARIES})
+else(ANDROID)
+    set (LIBRARIES ${OPENSSL_LIBRARIES} ${PTHREAD_LIBRARIES})
+endif(ANDROID)
 
-if (UNIX AND NOT APPLE)
+if (UNIX AND NOT APPLE AND NOT ANDROID)
 	set (LIBRARIES ${LIBRARIES} rt)
-endif (UNIX AND NOT APPLE)
+endif (UNIX AND NOT APPLE AND NOT ANDROID)
 
 if (WIN32)
 	set (LIBRARIES ${LIBRARIES} ws2_32)
@@ -62,7 +70,15 @@ if (${WITH_SRV} STREQUAL ON)
 	endif (ARES_HEADER)
 endif (${WITH_SRV} STREQUAL ON)
 
-target_link_libraries(libmosquitto ${LIBRARIES})
+if(ANDROID)
+    add_library(libcrypto STATIC IMPORTED)
+    set_target_properties(libcrypto PROPERTIES IMPORTED_LOCATION ${OPENSSL_LIBRARIES}/libcrypto.a)
+    add_library(libssl STATIC IMPORTED)
+    set_target_properties(libssl PROPERTIES IMPORTED_LOCATION ${OPENSSL_LIBRARIES}/libssl.a)
+    target_link_libraries(libmosquitto ${LIBRARIES} libssl libcrypto)
+else (ANDROID)
+    target_link_libraries(libmosquitto ${LIBRARIES})
+endif(ANDROID)
 
 set_target_properties(libmosquitto PROPERTIES
 	OUTPUT_NAME mosquitto
@@ -71,7 +87,7 @@ set_target_properties(libmosquitto PROPERTIES
 )
 
 install(TARGETS libmosquitto RUNTIME DESTINATION ${BINDIR} LIBRARY DESTINATION ${LIBDIR})
-install(FILES mosquitto.h DESTINATION ${INCLUDEDIR})
+file(COPY mosquitto.h DESTINATION ${INCLUDEDIR})
 
 if (UNIX)
 	install(CODE "EXEC_PROGRAM(/sbin/ldconfig)")

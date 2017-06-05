@@ -1,7 +1,9 @@
-include_directories(${mosquitto_SOURCE_DIR} ${mosquitto_SOURCE_DIR}/src
-		${mosquitto_SOURCE_DIR}/lib ${OPENSSL_INCLUDE_DIR}
-		${STDBOOL_H_PATH} ${STDINT_H_PATH})
-
+include_directories(${mosquitto_SOURCE_DIR} 
+					${mosquitto_SOURCE_DIR}/src
+					${mosquitto_SOURCE_DIR}/lib 
+					${OPENSSL_INCLUDE_DIR}
+					${STDBOOL_H_PATH} 
+					${STDINT_H_PATH})
 set (MOSQ_SRCS
 	conf.c
 	context.c
@@ -83,11 +85,11 @@ add_executable(mosquitto ${MOSQ_SRCS})
 set (MOSQ_LIBS ${MOSQ_LIBS} ${OPENSSL_LIBRARIES})
 
 if (UNIX)
-	if (APPLE)
+	if (APPLE OR ANDROID)
 		set (MOSQ_LIBS ${MOSQ_LIBS} dl m)
-	else (APPLE)
+	else (APPLE OR ANDROID)
 		set (MOSQ_LIBS ${MOSQ_LIBS} rt dl m)
-	endif (APPLE)
+	endif (APPLE OR ANDROID)
 endif (UNIX)
 
 if (WIN32)
@@ -107,7 +109,18 @@ if(NOT APPLE)
 	endif (UUID_HEADER)
 endif(NOT APPLE)
 
-target_link_libraries(mosquitto ${MOSQ_LIBS})
+if(ANDROID)
+	add_library(libcrypto STATIC IMPORTED)
+	set_target_properties(libcrypto PROPERTIES IMPORTED_LOCATION ${OPENSSL_LIBRARIES}/libcrypto.a)
+	add_library(libssl STATIC IMPORTED)
+	set_target_properties(libssl PROPERTIES IMPORTED_LOCATION ${OPENSSL_LIBRARIES}/libssl.a)
+endif(ANDROID)
+	
+if (ANDROID)
+	target_link_libraries(mosquitto ${MOSQ_LIBS} libssl libcrypto)
+else (ANDROID)
+	target_link_libraries(mosquitto ${MOSQ_LIBS})
+endif (ANDROID)
 
 if (UNIX)
 	if (APPLE)
@@ -116,13 +129,16 @@ if (UNIX)
 		set_target_properties(mosquitto PROPERTIES LINK_FLAGS "-Wl,-dynamic-list=${mosquitto_SOURCE_DIR}/src/linker.syms")
 	endif (APPLE)
 endif (UNIX)
-
 install(TARGETS mosquitto RUNTIME DESTINATION ${SBINDIR} LIBRARY DESTINATION ${LIBDIR})
 install(FILES mosquitto_plugin.h DESTINATION ${INCLUDEDIR})
 
 if (${WITH_TLS} STREQUAL ON)
 	add_executable(mosquitto_passwd mosquitto_passwd.c)
-	target_link_libraries(mosquitto_passwd ${OPENSSL_LIBRARIES})
+	if(ANDROID)
+        target_link_libraries(mosquitto_passwd libssl libcrypto)
+	else (ANDROID)
+    	target_link_libraries(mosquitto_passwd ${OPENSSL_LIBRARIES})
+	endif(ANDROID)
 	install(TARGETS mosquitto_passwd RUNTIME DESTINATION ${BINDIR} LIBRARY DESTINATION ${LIBDIR})
 endif (${WITH_TLS} STREQUAL ON)
 

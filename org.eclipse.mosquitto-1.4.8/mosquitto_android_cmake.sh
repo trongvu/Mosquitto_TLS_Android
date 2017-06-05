@@ -8,19 +8,21 @@
 
 # Threading has to be disabled since android doesn't support it fully
 # Also disabled TLS since I couldn't get cmake to find the openssl lib properly
-
+CURRENT_DIR=$(dirname $(readlink -f $0))
+PARRENT_DIR="$(dirname "$CURRENT_DIR")"
+ANDROID_ABI="armeabi-v7a"
 rm -rf build
 mkdir -p build
 cd build
 cmake \
    -DANDROID_NDK="/home/vntrong/android-ndk-r14b" \
-   -DANDROID_ABI="armeabi" \
+   -DANDROID_ABI=${ANDROID_ABI} \
    -DANDROID_NDK_HOST_X64="YES" \
    -DANDROID_NATIVE_API_LEVEL=19 \
    -DANDROID_TOOLCHAIN_NAME="arm-linux-androideabi-4.9" \
-   -DCMAKE_TOOLCHAIN_FILE="/home/vntrong/MQTT/android-cmake-master/android.toolchain.cmake" \
-   -DOPENSSL_LIBRARIES="/home/vntrong/MQTT/openssl/arch-$ANDROID_NDK_ABI_NAME/lib" \
-   -DOPENSSL_INCLUDE_DIR="/home/vntrong/MQTT/openssl/source/include" \
+   -DCMAKE_TOOLCHAIN_FILE="${PARRENT_DIR}/android-cmake/android.toolchain.cmake" \
+   -DOPENSSL_LIBRARIES="${PARRENT_DIR}/openssl/arch-${ANDROID_ABI}/lib" \
+   -DOPENSSL_INCLUDE_DIR="${PARRENT_DIR}/openssl/sources/include" \
    -DWITH_TLS=ON \
    -DWITH_THREADING=OFF ..
 cd ..

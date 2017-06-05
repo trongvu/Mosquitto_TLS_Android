@@ -36,7 +36,11 @@ Contributors:
 #endif
 
 #if !defined(WIN32) && !defined(__CYGWIN__)
+#if !defined(__ANDROID__)
 #  include <sys/syslog.h>
+#else
+#	include <syslog.h>
+#endif
 #endif
 
 #include <mosquitto_broker.h>

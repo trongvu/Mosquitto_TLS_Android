@@ -58,7 +58,10 @@ option(WITH_TLS_PSK
 option(WITH_EC
 	"Include Elliptic Curve support (requires WITH_TLS)?" ON)
 if (${WITH_TLS} STREQUAL ON)
-	find_package(OpenSSL REQUIRED)
+	#link OpenSSL manually
+	if(NOT ANDROID)
+		find_package(OpenSSL REQUIRED)
+	endif(NOT ANDROID)
 	add_definitions("-DWITH_TLS")
 
 	if (${WITH_TLS_PSK} STREQUAL ON)
@@ -84,9 +87,9 @@ option(WITH_SRV "Include SRV lookup support?" ON)
 # ========================================
 
 add_subdirectory(lib)
-add_subdirectory(client)
+#add_subdirectory(client)
 add_subdirectory(src)
-add_subdirectory(man)
+#add_subdirectory(man)
 
 # ========================================
 # Install config file
