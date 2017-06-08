@@ -10,5 +10,5 @@ But WITH_TLS flag was disabled due to OpenSSL problem.
 [Prebuilt binary](org.eclipse.mosquitto-1.4.8/prebuilt) for Android arm-v7a was included.
 Push things to device and enjoy :)
 # Original project
-Mosquitto: https://mosquitto.org/
+Mosquitto: https://mosquitto.org/  
 OpenSSL: https://www.openssl.org/
