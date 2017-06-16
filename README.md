@@ -1,4 +1,4 @@
-# Mosquitto_TLS_Android
+# Mosquitto_TLS_Android [![Build Status](https://travis-ci.org/trongvu/Mosquitto_TLS_Android.svg?branch=master)](https://travis-ci.org/trongvu/Mosquitto_TLS_Android)
 About supporting TLS connection in Mosquitto for Android.  
 Original buildscript was forked @ https://gist.github.com/andreasjk/5525205  
 But WITH_TLS flag was disabled due to OpenSSL problem.  
