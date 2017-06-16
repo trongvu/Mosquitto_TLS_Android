@@ -10,9 +10,9 @@
 # Also disabled TLS since I couldn't get cmake to find the openssl lib properly
 CURRENT_DIR=$(dirname $(readlink -f $0))
 ANDROID_ABI="armeabi-v7a"
-rm -rf org.eclipse.mosquitto-1.4.8/build
-mkdir -p org.eclipse.mosquitto-1.4.8/build
-cd org.eclipse.mosquitto-1.4.8/build
+rm -rf mosquitto/build
+mkdir -p mosquitto/build
+cd mosquitto/build
 cmake \
    -DANDROID_NDK="/home/${USER}/android-ndk-r14b" \
    -DANDROID_ABI=${ANDROID_ABI} \
@@ -24,4 +24,7 @@ cmake \
    -DOPENSSL_INCLUDE_DIR="${CURRENT_DIR}/openssl/sources/include" \
    -DWITH_TLS=ON \
    -DWITH_THREADING=OFF ..
+echo "Start building android ..."
+make
+echo "Output file `pwd`"
 cd ..
