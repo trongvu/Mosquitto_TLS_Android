@@ -7,7 +7,7 @@ But WITH_TLS flag was disabled due to OpenSSL problem.
 2. Run mosquitto_android_cmake.sh
 3. cd org.eclipse.mosquitto-1.4.8/build & make
 # How to use
-[Prebuilt binary](org.eclipse.mosquitto-1.4.8/prebuilt) for Android arm-v7a was included.  
+[Prebuilt binary](prebuilt/) for Android arm-v7a was included.  
 Push things to device and enjoy :)
 # Original project
 Mosquitto: https://mosquitto.org/  
