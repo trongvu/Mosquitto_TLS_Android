@@ -11,4 +11,6 @@ But WITH_TLS flag was disabled due to OpenSSL problem.
 Push things to device and enjoy :)
 # Original project
 Mosquitto: https://mosquitto.org/  
-OpenSSL: https://www.openssl.org/
+OpenSSL: https://www.openssl.org/  
+# To do  
+Support PThread for Android building
