@@ -13,4 +13,4 @@ Push things to device and enjoy :)
 Mosquitto: https://mosquitto.org/  
 OpenSSL: https://www.openssl.org/  
 # To do  
-Support PThread for Android building
+JNI binding for Mosquitto
