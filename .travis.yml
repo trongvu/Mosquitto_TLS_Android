@@ -1,0 +1,24 @@
+language: cpp
+
+os:
+  - linux
+  
+sudo: required
+dist: trusty
+
+branches:
+  only:
+    - master
+
+before_install:
+	git clone --depth=1 https://github.com/urho3d/android-ndk.git $HOME/android-ndk;
+	export ANDROID_NDK=$HOME/android-ndk;
+	
+script: ./mosquitto_android_cmake.sh
+
+notifications:
+  email:
+    recipients:
+      - vungoctrong@gmail.com
+    on_success: change
+    on_failure: always

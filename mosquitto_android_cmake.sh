@@ -14,7 +14,7 @@ rm -rf mosquitto/build
 mkdir -p mosquitto/build
 cd mosquitto/build
 cmake \
-   -DANDROID_NDK="/home/${USER}/android-ndk-r14b" \
+   -DANDROID_NDK=${ANDROID_NDK} \
    -DANDROID_ABI=${ANDROID_ABI} \
    -DANDROID_NDK_HOST_X64="YES" \
    -DANDROID_NATIVE_API_LEVEL=19 \
